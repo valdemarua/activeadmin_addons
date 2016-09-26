@@ -81,6 +81,9 @@ $(function() {
       var parentId = $(el).data('parent_id') || INVALID_PARENT_ID;
       var selectInstance;
 
+      console.error($(el))
+      var object_type = $(el).data('object_type');
+
       var ajaxOptions = {
         url: url,
         dataType: 'json',
@@ -102,7 +105,6 @@ $(function() {
           if (!!parent) {
             query.q[parent + '_eq'] = parentId;
           }
-
           return query;
         },
         results: function(data, page) {
@@ -113,7 +115,7 @@ $(function() {
           return {
             results: jQuery.map(data, function(resource) {
               return {
-                id: resource.id,
+                id: resource[object_type],
                 text: resource[displayName].toString()
               };
             })
@@ -124,7 +126,6 @@ $(function() {
 
       var collectionOptions = function(query) {
         var data = { results: [] };
-
         collection.forEach(function(record) {
           var matched = fields.some(function(field) {
             var regex = new RegExp(query.term, 'i');
@@ -135,7 +136,6 @@ $(function() {
             data.results.push({ id: record.id, text: record[displayName].toString() });
           }
         });
-
         query.callback(data);
       };
 
